@@ -1,0 +1,37 @@
+# Except for the secret key, none of these are actually needed; Rocket has sane
+# defaults. We show all of them here explicitly for demonstrative purposes.
+
+# [global.limits]
+# forms = "64 kB"
+# json = "1 MiB"
+# msgpack = "2 MiB"
+# # files = { "jpg" = "5 MiB" }
+
+[development]
+address = "127.0.0.1"
+port = 8000
+workers = 1
+keep_alive = 0
+log_level = "normal"
+
+[development.ldap]
+uri = "ldap://127.0.0.1:10389"
+base_dn = "ou=demo,dc=example,dc=com"
+admin_dn = "uid=demo,dc=example,dc=com"
+admin_pwd = "demo"
+
+[production]
+address = "127.0.0.1"
+port = 8000
+workers = 2
+keep_alive = 5
+log_level = "critical"
+# don't use this key! generate your own and keep it private!
+secret_key = "hPRYyVRiMyxpw5sBB1XeCMN1kFsDCqKvBi2QJxBVHQk="
+
+[production.ldap]
+# change to your settings.
+#uri = "ldap://127.0.0.1:10389"
+#base_dn = "ou=demo,dc=example,dc=com"
+#admin_dn = "uid=demo,dc=example,dc=com"
+#admin_pwd = "demo"

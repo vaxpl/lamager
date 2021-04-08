@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <base href="/" />
+  <title>账号系统</title>
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1,user-scalable=yes">
+  <link rel="stylesheet" type="text/css" class="ui" href="/assets/vendor/semantic-2.4.1/semantic.min.css"">
+  <script type=" text/javascript" src="/assets/vendor/jquery-3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="/assets/vendor/semantic-2.4.1/semantic.min.js"></script>
+</head>
+
+<body>
+  <div class="ui inverted menu">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <img class="logo" src="assets/img/logo.png">&nbsp;&nbsp;账号系统</a>
+      <a href="index" class="item">首页</a>
+      {{#if is_admin}}
+      <div class="ui simple dropdown item">
+        功能<i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="profiles">雇员名单</a>
+          <a class="item" href="#">Link Item</a>
+          <div class="divider"></div>
+          <div class="header">Header Item</div>
+          <div class="item">
+            <i class="dropdown icon"></i>
+            Sub Menu
+            <div class="menu">
+              <a class="item" href="#">Link Item</a>
+              <a class="item" href="#">Link Item</a>
+            </div>
+          </div>
+          <a class="item" href="#">Link Item</a>
+        </div>
+      </div>
+      {{/if}}
+      <div class="right menu">
+        <div class="item">
+          <a class="ui button" href="logout">登出</a>
+        </div>
+        <div class="item">
+          <a class="ui primary button" href="register">注册</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="ui five wide column">
+        <div class="ui card">
+          <div class="ui fluid image">
+            <div class="ui left corner label">
+              <i id="edit_avatar" class="edit icon link" data-position="bottom left"></i>
+            </div>
+            <div class="ui custom popup top left transition hidden">
+              请选择你要上传的头像文件：
+              <form class="ui form" name="avatar" enctype="multipart/form-data">
+                <div class="ui fluid action input" style="width:320px;">
+                  <input type="text" id="avatar_file_name" placeholder="">
+                  <input type="file" id="avatar_file" name="avatar_file" accept="image/jpeg"
+                    onchange="$('#avatar_file_name').val(this.value);" style="display: none">
+                  <label for="avatar_file" class="ui button">浏览</label>
+                  <button class="ui button" onclick="update_avatar();return false;">上传</button-->
+                    <!--input type="submit" class="ui button" value="Upload Image" name="submit"-->
+                </div>
+              </form>
+            </div>
+            {{#if photo}}
+            <img src="data:image/jpeg;base64,{{photo}}" style="min-height: 160px;" />
+            {{else}}
+            <img src="assets/img/null.png" />
+            {{/if}}
+          </div>
+          <div class="content">
+            <h3 class="ui center aligned header">{{cn}}<div class="sub header">{{uid}}</div>
+            </h3>
+          </div>
+          <div class="extra content">
+            <ul class="text black">
+              <li>
+                <i class="icon mail"></i>
+                <a href="mailto:{{mail}}" rel="nofollow">{{mail}}</a>
+              </li>
+              <li><i class="icon clock"></i> 加入于 {{createTimestamp}}</li>
+              <li>
+                <i class="icon users"></i> {角色}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="content" class="ui eleven wide column">
+        <div class="ui pointing secondary menu">
+          <a class="item active" data-tab="avails">可用服务</a>
+          <a class="item" data-tab="person">个人信息</a>
+          <a class="item" data-tab="password">修改密码</a>
+        </div>
+
+        <div class="ui tab segments active" data-tab="avails">
+          <div class="ui secondary segment">
+            <h4 class="ui header">
+              服务清单
+            </h4>
+            <p>这里列出你可以在本部门内使用的功能。</p>
+          </div>
+          <div class="ui segment">
+            <div class="ui middle aligned animated list">
+              <div class="item">
+                <i class="large privacy middle aligned icon"></i>
+                <div class="content">
+                  <div class="header"><a href="https://ldap.vaxpl.com">账号系统</a></div>
+                  统一管理员工账号，使用同一个账号可以登录各项功能。
+                </div>
+              </div>
+              <div class="item">
+                <i class="large tasks middle aligned icon"></i>
+                <div class="content">
+                  <div class="header"><a href="https://pm.vaxpl.com">项目管理</a></div>
+                  提供项目管理，例如项目需求、任务分派、报表、进度等等。
+                </div>
+              </div>
+              <div class="item">
+                <i class="large git middle aligned icon"></i>
+                <div class="content">
+                  <div class="header"><a href="https://git.vaxpl.com">代码仓库</a></div>
+                  提供基于 GIT 方式的代码版本控制功能。
+                </div>
+              </div>
+              <div class="item">
+                <i class="large wordpress middle aligned icon"></i>
+                <div class="content">
+                  <div class="header"><a href="https://wp.vaxpl.com">文档发布</a></div>
+                  提供文档发布、消息公示、技术资料归档等功能。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui tab segments" data-tab="person">
+          <div class="ui secondary segment">
+            <h4 class="ui header">
+              公开信息
+            </h4>
+            <p>您的邮箱地址将会被公开，并被用于接收帐户的所有提醒和通知。</p>
+            <div id="person_result_msg">
+            </div>
+          </div>
+
+          <div class="ui segment">
+            <form class="ui form" name='person'>
+              <div class="disabled required field ">
+                <label for="uid">账号名称<span class="text red hide" id="name-change-prompt">
+                    该操作将会影响到所有与您帐户有关的链接</span></label>
+                <input id="uid" name="uid" value="{{uid}}" readonly>
+              </div>
+              <div class="field ">
+                <label for="cn">真实姓名</label>
+                <input id="cn" name="cn" value="{{cn}}">
+              </div>
+              <div class="required field ">
+                <label for="mail">电子邮箱</label>
+                <input id="mail" name="mail" value="{{mail}}">
+              </div>
+              <div class="field">
+                <label for="location">所在地区</label>
+                <input id="location" name="location" value="">
+              </div>
+              <div class="field">
+                <input type="submit" class="ui green button" value="更新信息" />
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="ui tab segments" data-tab="password">
+          <div class="ui secondary segment">
+            <h4 class="ui header">
+              账号密码
+            </h4>
+            <p>你的账号密码会影响所有的服务。</p>
+            <div id="password_result_msg">
+            </div>
+          </div>
+          <form class="ui form segment error" name='password'>
+            <div class="ui left required field error">
+              <label for="old_password">当前密码</label>
+              <input type="password" id="old_password" name="old_password" value="">
+            </div>
+            <div class="required field ">
+              <label for="new_password">新的密码</label>
+              <input type="password" id="new_password" name="new_password" value="">
+            </div>
+            <div class="required field ">
+              <label for="new_password_confirm">新的密码确认</label>
+              <input type="password" id="new_password_confirm" name="new_password_confirm" value="">
+            </div>
+            <div class="field">
+              <input type="submit" class="ui green button" value="更新密码" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    //
+    // Update avatar
+    //
+    function update_avatar() {
+      var data = new FormData(document.forms.namedItem("avatar"));
+      $.ajax({
+        url: "profile/avatar",
+        type: "POST",
+        data: data,
+        processData: false,
+        contentType: false,
+        complete: function (xhr) {
+          if (xhr.status === 200)
+            document.location = "profile";
+        }
+      });
+    }
+
+    $(document).ready(function () {
+      $.fn.api.settings.api = {
+        "update avatar": "profile/avatar",
+        "update password": "profile/password",
+        "update person": "profile/person"
+      };
+
+      // Responses without this status will trigger error conditions
+      $.fn.api.settings.successTest = function (response) {
+        return response.status == 'OK';
+      }
+
+      var vaildateRules = {
+        fields: {
+          uid: {
+            identifier: 'uid',
+            rules: [{
+              type: 'empty',
+              prompt: '用户名称不能为空'
+            }, {
+              type: 'length[2]',
+              prompt: '用户名称不能少于 2 个字符'
+            }]
+          },
+          cn: {
+            identifier: 'cn',
+            rules: [{
+              type: 'empty',
+              prompt: '真实姓名不能为空'
+            }, {
+              type: 'length[2]',
+              prompt: '真实姓名不能少于 2 个字符'
+            }]
+          },
+          mail: {
+            identifier: 'mail',
+            rules: [{
+              type: 'email',
+              prompt: '请输入一个有效的电子邮箱'
+            }]
+          },
+          new_password: {
+            identifier: 'new_password',
+            rules: [{
+              type: 'empty',
+              prompt: '账号密码不能为空'
+            }, {
+              type: 'length[4]',
+              prompt: '账号密码不能少于 4 个字符'
+            }, {
+              type: 'different[old_password]',
+              prompt: '新密码不能与旧密码相同'
+            }]
+          },
+          new_password_confirm: {
+            identifier: 'new_password_confirm',
+            rules: [{
+              type: 'match[new_password]',
+              prompt: '两次输入的账号密码必须相同'
+            }]
+          },
+          old_password: {
+            identifier: 'old_password',
+            rules: [{
+              type: 'empty',
+              prompt: '账号密码不能为空'
+            }, {
+              type: 'length[4]',
+              prompt: '账号密码不能少于 4 个字符'
+            }]
+          }
+        },
+        inline: true,
+        on: 'blur',
+        onSuccess: function (s) {
+          console.log(s);
+        }
+      };
+
+      $('.menu .item').tab();
+      $('.message .close').on('click', function () { console.log('aaa'); $(this).parent().hide(); });
+      //
+      $('.ui.form').form(vaildateRules);
+
+      $('form[name=password]').api({
+        action: "update password",
+        method: 'POST',
+        serializeForm: true,
+        onComplete: function (xhr) {
+          $('#password_result_msg').html(xhr.responseText);
+          $('#password_result_msg .close').on('click', function () { $(this).parent().hide(); });
+          if (xhr.status === 200)
+            document.location = "logout";
+        },
+      });
+
+      $('form[name=person]').api({
+        action: "update person",
+        method: 'POST',
+        serializeForm: true,
+        onComplete: function (xhr) {
+          $('#person_result_msg').html(xhr.responseText);
+          $('#person_result_msg .close').on('click', function () { $(this).parent().hide(); });
+        },
+      });
+
+      $('#edit_avatar').popup({
+        popup: $('.custom.popup'),
+        on: 'click'
+      });
+    });
+  </script>
+</body>
+
+</html>

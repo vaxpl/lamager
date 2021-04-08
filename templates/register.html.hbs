@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <base href="/" />
+  <title>账号系统</title>
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1,user-scalable=yes">
+  <link rel="stylesheet" type="text/css" class="ui" href="/assets/vendor/semantic-2.4.1/semantic.min.css"">
+  <script type=" text/javascript" src="/assets/vendor/jquery-3.6.0/jquery.min.js">
+  </script>
+  <script type="text/javascript" src="/assets/vendor/semantic-2.4.1/semantic.min.js"></script>
+</head>
+
+<body>
+  <div class="ui inverted menu">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <img class="logo" src="assets/img/logo.png">
+        &nbsp;&nbsp;账号系统 </a>
+      <a href="index" class="item">首页</a>
+      <div class="right menu">
+        <div class="item">
+          <a class="ui button" href="login">登录</a>
+        </div>
+        <div class="item">
+          <a class="ui primary button" href="register">注册</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui middle aligned center aligned grid">
+    <div class="column" style="margin-top:100px;min-width:320px;max-width:460px;">
+      <h2 class="ui teal image header">
+        <img src="assets/img/logo.png" class="image">
+        <div class="content">注册你的账号 </div>
+      </h2>
+
+      <form class="ui large form stacked segment" action="register" method="post">
+        <div class="required field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="uid" placeholder="用户名称（员工编号）" value="">
+          </div>
+        </div>
+        <div class="required field">
+          <div class="ui left icon input">
+            <i class="announcement icon"></i>
+            <input type="text" name="cn" placeholder="真实姓名" value="">
+          </div>
+        </div>
+        <div class="required field">
+          <div class="ui left icon input">
+            <i class="mail icon"></i>
+            <input type="text" name="mail" placeholder="电子邮箱" value="">
+          </div>
+        </div>
+        <div class="required field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="账号密码" value="">
+          </div>
+        </div>
+        <div class="required field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password_confirm" placeholder="账号密码确认" value="">
+          </div>
+        </div>
+
+        <div class="ui fluid large teal submit button">注册</div>
+      </form>
+
+      <div class="ui message">
+        如果你是老司机，请点这里：<a href="login">登录</a>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $('.ui.form').form({
+        fields: {
+          uid: {
+            identifier: 'uid',
+            rules: [{
+              type: 'empty',
+              prompt: '用户名称不能为空'
+            }, {
+              type: 'minLength[2]',
+              prompt: '用户名称不能少于 2 个字符'
+            }, {
+              type: 'maxLength[8]',
+              prompt: '用户名称不能大于 8 个字符'
+            }, {
+              type: 'regExp[/^[A-Z0-9]{2,8}$/]',
+              prompt: '用户名称必须为大写字母+数字'
+            }]
+          },
+          cn: {
+            identifier: 'cn',
+            rules: [{
+              type: 'empty',
+              prompt: '真实姓名不能为空'
+            }, {
+              type: 'length[2]',
+              prompt: '真实姓名不能少于 2 个字符'
+            }]
+          },
+          mail: {
+            identifier: 'mail',
+            rules: [{
+              type: 'email',
+              prompt: '请输入一个有效的电子邮箱'
+            }]
+          },
+          password: {
+            identifier: 'password',
+            rules: [{
+              type: 'empty',
+              prompt: '账号密码不能为空'
+            }, {
+              type: 'length[4]',
+              prompt: '账号密码不能少于 4 个字符'
+            }]
+          },
+          password_confirm: {
+            identifier: 'password_confirm',
+            rules: [{
+              type: 'match[password]',
+              prompt: '两次输入的账号密码必须相同'
+            }]
+          }
+        },
+        inline: true,
+        on: 'blur'
+      });
+      $('.message .close').on('click', function () { $(this).parent().hide(); });
+    });
+  </script>
+</body>
+
+</html>

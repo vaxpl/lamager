@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <base href="/" />
+  <title>账号系统</title>
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1,user-scalable=yes">
+  <link rel="stylesheet" type="text/css" class="ui" href="/assets/vendor/semantic-2.4.1/semantic.min.css"">
+  <script type=" text/javascript" src="/assets/vendor/jquery-3.6.0/jquery.min.js">
+  </script>
+  <script type="text/javascript" src="/assets/vendor/semantic-2.4.1/semantic.min.js"></script>
+</head>
+
+<body>
+  <div class="ui inverted menu">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <img class="logo" src="/assets/img/logo.png">
+        &nbsp;&nbsp;账号系统 </a>
+      <a href="index" class="item">首页</a>
+      <div class="right menu">
+        <div class="item">
+          <a class="ui button" href="login">登录</a>
+        </div>
+        <div class="item">
+          <a class="ui primary button" href="register">注册</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui middle aligned center aligned grid">
+    <div class="column" style="margin-top:100px;min-width:320px;max-width:460px;">
+      <h2 class="ui teal image header">
+        <img src="/assets/img/logo.png" class="image">
+        <div class="content">登录你的账号</div>
+      </h2>
+
+      {{#if flash}}
+      <div class="ui error message">
+        <i class="close icon"></i>
+        <div class="header" style="text-align:left;">提示</div>
+        <ul class="list">
+          <li>{{flash}}</li>
+        </ul>
+      </div>
+      {{/if}}
+
+      <form class="ui large form stacked segment" action="login" method="post">
+        <!--div class="ui stacked segment"-->
+        <div class="required field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" placeholder="账号名称（员工编号或电子邮箱）" value="">
+          </div>
+        </div>
+        <div class="required field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="账号密码" value="">
+          </div>
+        </div>
+        <div class="ui fluid large teal submit button">登录</div>
+        <!--/div-->
+
+      </form>
+
+      <div class="ui message">
+        你是新来的小伙伴？<a href="register">注册</a>，
+        忘记密码？<a href="recover">找回</a>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $('.ui.form').form({
+        fields: {
+          uid: {
+            identifier: 'uid',
+            rules: [{
+              type: 'empty',
+              prompt: '账号名称不能为空'
+            }, {
+              type: 'length[2]',
+              prompt: '账号名称不能少于 2 个字符'
+            }]
+          },
+          password: {
+            identifier: 'password',
+            rules: [{
+              type: 'empty',
+              prompt: '账号密码不能为空'
+            }, {
+              type: 'length[4]',
+              prompt: '账号密码不能少于 4 个字符'
+            }]
+          }
+        },
+        inline: true,
+        on: 'blur'
+      });
+      $('.message .close').on('click', function () { $(this).parent().hide(); });
+    });
+  </script>
+</body>
+
+</html>
