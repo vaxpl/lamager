@@ -178,18 +178,3 @@ impl From<&BTreeMap<String, Value>> for LdapConfig {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_search_mail() {
-        let mut la = LdapAccessor::new("ldap://10.0.6.238:10389").unwrap();
-        let r = la
-            .entry_of_username("ou=people,dc=vaxpl,dc=com", "varphone@qq.com")
-            .unwrap();
-        println!("r={:#?}", r);
-        assert_eq!(la.verify_password(r.dn, "Var,,100200"), true);
-    }
-}
