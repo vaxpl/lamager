@@ -1,4 +1,4 @@
-use crate::models::{NewPassword, NewUser, Person};
+use crate::models::{NewPassword, NewUser, PasswordDigest, Person};
 use ldap3::result::{LdapError, Result};
 use ldap3::{LdapConn, Mod, Scope, SearchEntry};
 use maplit::hashset;
@@ -57,7 +57,7 @@ impl LdapAccessor {
             .simple_bind(&self.cfg.admin_dn, &self.cfg.admin_pwd)?
             .success()?;
         let dn = format!("uid={},{}", user.uid, self.cfg.base_dn);
-        let sha256_pwd = format!("{{SHA256}}{}", user.password_sha256());
+        let ssha256_pwd = format!("{{SSHA256}}{}", user.ssha256());
         self.con
             .add(
                 &dn,
@@ -67,7 +67,7 @@ impl LdapAccessor {
                     ("cn", hashset! { user.cn.as_str() }),
                     ("sn", hashset! { user.cn.as_str() }),
                     ("mail", hashset! { user.mail.as_str() }),
-                    ("userPassword", hashset! { sha256_pwd.as_str() }),
+                    ("userPassword", hashset! { ssha256_pwd.as_str() }),
                 ],
             )?
             .success()?;
@@ -82,10 +82,10 @@ impl LdapAccessor {
         self.con
             .simple_bind(user_dn.as_ref(), new_password.old_password.as_ref())?
             .success()?;
-        let sha256_pwd = format!("{{SHA256}}{}", new_password.password_sha256());
+        let ssha256_pwd = format!("{{SSHA256}}{}", new_password.ssha256());
         let mod_options = vec![Mod::Replace(
             "userPassword",
-            hashset! { sha256_pwd.as_str() },
+            hashset! { ssha256_pwd.as_str() },
         )];
         self.con.modify(user_dn.as_ref(), mod_options)?.success()?;
         Ok(())
