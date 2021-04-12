@@ -1,3 +1,4 @@
+mod api_message;
 mod login;
 mod new_password;
 mod new_user;
@@ -6,6 +7,7 @@ mod prelude;
 mod session;
 mod user;
 
+pub use api_message::*;
 pub use login::*;
 pub use new_password::*;
 pub use new_user::*;
