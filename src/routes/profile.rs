@@ -1,19 +1,19 @@
 use crate::ldap::LdapAccessor;
-use crate::models::{NewPassword, Person, SessionRef};
+use crate::models::{ApiMessage, NewPassword, Person, SessionRef};
 use image::imageops::FilterType as ImageFilterType;
 use image::io::Reader as ImageReader;
 use image::ImageOutputFormat;
 use rocket::http::ContentType;
 use rocket::request::Form;
+use rocket::response::status::BadRequest;
 use rocket::response::Redirect;
 use rocket::{Data, Route};
+use rocket_contrib::json::Json;
 use rocket_contrib::templates::Template;
 use rocket_multipart_form_data::{
     mime, MultipartFormData, MultipartFormDataField, MultipartFormDataOptions,
 };
 use std::collections::HashMap;
-// use rocket::response::Responder;
-use rocket::response::status::BadRequest;
 
 #[get("/profile")]
 pub(crate) fn profile(session: SessionRef, mut ldap: LdapAccessor) -> Template {
@@ -97,10 +97,19 @@ pub(crate) fn profile_password(
     new_password: Form<NewPassword>,
     session: SessionRef,
     mut ldap: LdapAccessor,
-) -> Result<(), BadRequest<String>> {
-    ldap.update_password(&session.dn, &new_password.into_inner())
-        .map_err(|err| BadRequest(Some(err.to_string())))?;
-    Ok(())
+) -> Json<ApiMessage<String, String, ()>> {
+    match ldap.update_password(&session.dn, &new_password.into_inner()) {
+        Ok(_) => Json(ApiMessage {
+            data: Some("okay".to_string()),
+            errors: None,
+            meta: None,
+        }),
+        Err(err) => Json(ApiMessage {
+            data: None,
+            errors: Some(err.to_string()),
+            meta: None,
+        }),
+    }
 }
 
 #[post("/profile/person", data = "<person>")]
