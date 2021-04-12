@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1.0,initial-scale=1,user-scalable=yes">
   <link rel="stylesheet" type="text/css" class="ui" href="/assets/vendor/semantic-2.4.1/semantic.min.css"">
   <script type=" text/javascript" src="/assets/vendor/jquery-3.6.0/jquery.min.js"></script>
+  <script type=" text/javascript" src="/assets/js/jquery.serialize-object.min.js"></script>
   <script type="text/javascript" src="/assets/vendor/semantic-2.4.1/semantic.min.js"></script>
 </head>
 
@@ -235,7 +236,7 @@
 
       // Responses without this status will trigger error conditions
       $.fn.api.settings.successTest = function (response) {
-        return response.status == 'OK';
+        return response.errors == null;
       }
 
       var vaildateRules = {
@@ -314,11 +315,13 @@
         action: "update password",
         method: 'POST',
         serializeForm: true,
-        onComplete: function (xhr) {
-          $('#password_result_msg').html(xhr.responseText);
+        onSuccess: function(response) {
+          document.location = "logout";
+        },
+        onFailure: function(response) {
+          var msg = '<div class="ui error message "><i class="close icon"></i><div class="header">出错：</div><code>' + response.errors + '</code></div>';
+          $('#password_result_msg').html(msg);
           $('#password_result_msg .close').on('click', function () { $(this).parent().hide(); });
-          if (xhr.status === 200)
-            document.location = "logout";
         },
       });
 
